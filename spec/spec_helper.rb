@@ -1,5 +1,6 @@
 require "bundler/setup"
 require "es_builder"
+require "es_builder_toy"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
@@ -10,5 +11,9 @@ RSpec.configure do |config|
 
   config.expect_with :rspec do |c|
     c.syntax = :expect
+  end
+
+  Dir[File.dirname(__FILE__) + '/contexts/*.rb'].each do |file| 
+    require file
   end
 end
