@@ -13,11 +13,12 @@ RSpec.shared_context 'school search interface' do
         "school_year_id_#{value}_active_true"
       end
 
-      fuzzy :name
-      fuzzy :name, context: :bool, options: { clause: :must }
+      fuzzy :name, options: { boost: 3 }
+      fuzzy :name, context: :bool, clause: :must, options: { boost: 3 }
 
       filter_by :active_school_years, with: :term, 
                                       format: active_school_years_format
+
       filter_by :governances, with: :terms,
                               combine: [:active_school_years],
                               format: governances_format

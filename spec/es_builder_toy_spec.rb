@@ -60,14 +60,16 @@ RSpec.describe EsBuilderToy do
   describe '#filter_by' do
     context 'term with formatting' do
       context 'active_school_years' do
-        let(:handler) { handlers[:bool][:filter].first }
+        let(:handler) { handlers[:bool].first }
         let(:bool_context) { result[:query][:bool] }
         let(:filter_context) { bool_context[:filter] }
         let(:term) { filter_context.first }
-        let(:term_clause) { term[:term] }
+        let(:term_query) { term[:term] }
         let(:expected_value) do
           {
-            active_school_years: "school_year_id_8_active_true" 
+            term: {
+              active_school_years: "school_year_id_8_active_true"
+            }
           }
         end
 
@@ -76,27 +78,26 @@ RSpec.describe EsBuilderToy do
         end
 
         it 'sets a valid query under the :term clause' do
-          expect(term_clause).to eq expected_value
+          expect(term).to eq expected_value
         end
 
         it 'sets a hash for the :term clause' do
-          expect(term_clause.is_a?(Hash)).to be true
+          expect(term.is_a?(Hash)).to be true
         end
 
         it 'enforces formatting' do
-          expect(term_clause[:active_school_years]).
+          expect(term_query[:active_school_years]).
             to eq "school_year_id_8_active_true"
         end
       end
     end
 
     context 'terms with combined formatting' do
-      let(:handler) { handlers[:bool][:filter].second }
+      let(:handler) { handlers[:bool].second }
       let(:output) { result[:query][:bool] }
       let(:filter_context) { output[:filter] }
       let(:terms) { filter_context.second }
-      let(:terms_clause) { terms[:terms] }
-      let(:governances) { terms_clause[:governances] }
+      let(:governances) { terms[:terms][:governances] }
       let(:expected_value) do
         {
           terms: {
@@ -130,12 +131,14 @@ RSpec.describe EsBuilderToy do
       end
     end
 
-    context '#range' do
-      let(:handler) { handlers[:bool][:filter].third }
+    context 'range' do
+      let(:handler) do 
+        handlers[:bool].last
+      end
       let(:output) { result[:query][:bool] }
       let(:filter) { output[:filter] }
-      let(:range) { filter.third }
-      let(:range_clause) { range[:range][:ages] }
+      let(:range) { filter.last }
+      let(:range_query) { range[:range][:ages] }
       let(:expected_value) do
         {
           range: {
@@ -148,7 +151,7 @@ RSpec.describe EsBuilderToy do
         }
       end
 
-      it 'defines a handler' do
+      it 'defines a handler(s)' do
         expect(handler.present?).to be true
       end
 
@@ -157,15 +160,15 @@ RSpec.describe EsBuilderToy do
       end
 
       it 'sets gte value' do
-        expect(range_clause[:gte]).to eq 20
+        expect(range_query[:gte]).to eq 20
       end
 
       it 'sets lte value' do
-        expect(range_clause[:lte]).to eq 10
+        expect(range_query[:lte]).to eq 10
       end
 
       it 'sets format value' do
-        expect(range_clause[:format]).to eq "mm/dd/yyyy"
+        expect(range_query[:format]).to eq "mm/dd/yyyy"
       end
     end
   end
@@ -214,7 +217,20 @@ RSpec.describe EsBuilderToy do
 
   describe '#fuzzy' do
     context 'building compound must queries' do
-      let(:handler) { handlers[:bool][:must].first }
+      let(:handler) { handlers[:bool].first }
+      let(:output) { result[:query] }
+      let(:must_clause) { output[:bool][:must] }
+      let(:expected_result) do
+        {
+          fuzzy: {
+            name: {
+              value: "Art",
+               boost: 3
+            },
+          }
+        }
+      end
+
 
       it 'defines a handler' do
         expect(handler.present?).to be true
@@ -225,22 +241,30 @@ RSpec.describe EsBuilderToy do
       #   expect(fuzzy_attribute[:boost]).to eq 3
       # end
 
+      it 'sets a valid fuzzy query under the :must clause' do
+        expect(must_clause).to eq expected_result 
+      end
+
       # it 'set the query value' do
       #   expect(value).to eq query
       # end 
     end
 
     context 'building leaf queries' do
-      let(:handler) { handlers[:query][:fuzzy].first }
+      let(:handler) do 
+        handlers[:query].first
+      end
       let(:output) { result[:query] }
       let(:fuzzy) { output[:fuzzy] }
+      let(:fuzzy_value) { fuzzy[:name] }
       # let(:range) { filter.third }
       # let(:range_clause) { range[:range][:ages] }
       let(:expected_value) do
         {
           name: {
-            value: "Art"
-          }
+            value: "Art",
+            boost: 3
+          },
         }
       end
 
@@ -252,10 +276,11 @@ RSpec.describe EsBuilderToy do
         expect(fuzzy).to eq expected_value
       end
 
-      # it 'includes option values' do
-      #   expect(fuzzy_attribute.include?(:boost)).to be true
-      #   expect(fuzzy_attribute[:boost]).to eq 3
-      # end
+      it 'includes option values' do
+        # binding.pry
+        expect(fuzzy_value.include?(:boost)).to be true
+        expect(fuzzy_value[:boost]).to eq 3
+      end
 
       # it 'set the query value' do
       #   expect(value).to eq query
