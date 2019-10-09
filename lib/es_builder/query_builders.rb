@@ -1,6 +1,6 @@
 module QueryBuilders
-  def build_term_level_query(conditions, filters={})
-    attribute = conditions[:attribute]
+  def build_term_level_query(handler, filters={})
+    attribute = handler[:attribute]
     value = filters[attribute] || filters[:query]
 
     return {} if value.nil?
@@ -11,16 +11,16 @@ module QueryBuilders
     end
   end
 
-  def build_bool_query(conditions, filters={})
-    attribute = conditions[:attribute]
+  def build_bool_query(handler, filters={})
+    attribute = handler[:attribute]
     _value = filters[attribute]
 
     return {} if _value.nil?
     return [] if [_value].flatten.empty?
 
-    format = conditions[:format]
-    with = conditions[:with]
-    combine = conditions[:combine]
+    format = handler[:format]
+    with = handler[:with]
+    combine = handler[:combine]
 
     should_format = format.present?
     combined = fetch_combine_values(combine, filters)
