@@ -46,6 +46,8 @@ module EsBuilderToy
     include Handlers
     include QueryBuilders
   
+    # TODO: solidify schema for handlers with structs
+
     def build(query: '', filters: {}, options: {})
       query_data = set_query_data(query, filters)
       bool_options = options[:bool] || {}
