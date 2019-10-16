@@ -1,5 +1,6 @@
 module QueryBuilders
   def build_term_level_query(handler, filters={})
+    # TODO add clause handling
     attribute = handler[:attribute]
     value = filters[attribute] || filters[:query]
 

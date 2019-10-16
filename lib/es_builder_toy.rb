@@ -56,10 +56,11 @@ module EsBuilderToy
 
       context(:query, options) do
         query_context = reduce_handlers(data: query_data)
+        # binding.pry
         bool_context = context(:bool, bool_options) do
           reduce_handlers(data: query_data, context: :bool)
         end
-
+        # binding.pry
         query_context.merge(bool_context)
       end
     end
@@ -74,33 +75,37 @@ module EsBuilderToy
     # * tested
     def filter_by(attribute, with:, combine: [], format: nil)
       handler = { 
+        query: :filter,
         attribute: attribute, 
         with: with,
         combine: combine, 
         format: format,
         query_type: :bool,
       }
-      set_handler(context: :bool, query: :filter, handler: handler)
+      set_handler(context: :bool, handler: handler)
     end
 
     
     # TERM LEVEL QUERIES
     # * tested
     def fuzzy(attribute, context: :query, options: {})
-      clause_or_query = (context == :query) ? :fuzzy : options[:clause]
-
-      # TODO consider using a struct for handlers
-      handler = { attribute: attribute, query_type: :term_level, has_one: true }
-      set_handler(context: context, query: clause_or_query, handler: handler)
+      handler = { 
+        query: :fuzzy,
+        clause: options[:clause],
+        attribute: attribute,
+        query_type: :term_level,
+        has_one: true
+      }
+      set_handler(context: context, handler: handler)
     end
 
     # * untested
     def range(by, options: {})
-      handle_options = {
-        with: :range, combine: [], format: nil, options: options
-      }
+      # handle_options = {
+      #   with: :range, combine: [], format: nil, options: options
+      # }
 
-      set_handler(name: by, options: handle_options)
+      # set_handler(name: by, options: handle_options)
     end
   end
 end
