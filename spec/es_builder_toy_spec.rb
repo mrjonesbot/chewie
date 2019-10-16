@@ -63,10 +63,13 @@ RSpec.describe EsBuilderToy do
         let(:handler) { handlers[:bool].first }
         let(:bool_context) { result[:query][:bool] }
         let(:filter_context) { bool_context[:filter] }
-        let(:term) { filter_context[:term] }
+        let(:term) { filter_context.first }
+        let(:term_query) { term[:term] }
         let(:expected_value) do
           {
-            active_school_years: "school_year_id_8_active_true" 
+            term: {
+              active_school_years: "school_year_id_8_active_true"
+            }
           }
         end
 
@@ -83,7 +86,7 @@ RSpec.describe EsBuilderToy do
         end
 
         it 'enforces formatting' do
-          expect(term[:active_school_years]).
+          expect(term_query[:active_school_years]).
             to eq "school_year_id_8_active_true"
         end
       end
@@ -93,14 +96,16 @@ RSpec.describe EsBuilderToy do
       let(:handler) { handlers[:bool].second }
       let(:output) { result[:query][:bool] }
       let(:filter_context) { output[:filter] }
-      let(:terms) { filter_context[:terms] }
-      let(:governances) { terms[:governances] }
+      let(:terms) { filter_context.second }
+      let(:governances) { terms[:terms][:governances] }
       let(:expected_value) do
         {
-          governances: [
-            "governance_Charter_school_year_id_8",
-            "governance_Alop_school_year_id_8"
-          ]
+          terms: {
+            governances: [
+              "governance_Charter_school_year_id_8",
+              "governance_Alop_school_year_id_8"
+            ]
+          }
         }
       end
 
@@ -132,14 +137,16 @@ RSpec.describe EsBuilderToy do
       end
       let(:output) { result[:query][:bool] }
       let(:filter) { output[:filter] }
-      let(:range) { filter[:range] }
-      let(:range_clause) { range[:ages] }
+      let(:range) { filter.last }
+      let(:range_query) { range[:range][:ages] }
       let(:expected_value) do
         {
-          ages: {
-            "gte" => 20,
-            "lte" => 10,
-            "format" => "mm/dd/yyyy"
+          range: {
+            ages: {
+              "gte" => 20,
+              "lte" => 10,
+              "format" => "mm/dd/yyyy"
+            }
           }
         }
       end
@@ -153,15 +160,15 @@ RSpec.describe EsBuilderToy do
       end
 
       it 'sets gte value' do
-        expect(range_clause[:gte]).to eq 20
+        expect(range_query[:gte]).to eq 20
       end
 
       it 'sets lte value' do
-        expect(range_clause[:lte]).to eq 10
+        expect(range_query[:lte]).to eq 10
       end
 
       it 'sets format value' do
-        expect(range_clause[:format]).to eq "mm/dd/yyyy"
+        expect(range_query[:format]).to eq "mm/dd/yyyy"
       end
     end
   end
@@ -219,7 +226,6 @@ RSpec.describe EsBuilderToy do
 
 
       it 'defines a handler' do
-        # binding.pry
         expect(handler.present?).to be true
       end
 
@@ -254,7 +260,6 @@ RSpec.describe EsBuilderToy do
       end
 
       it 'defines a handler' do
-        binding.pry
         expect(handler.present?).to be true
       end
 
