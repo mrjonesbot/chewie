@@ -56,11 +56,10 @@ module EsBuilderToy
 
       context(:query, options) do
         query_context = reduce_handlers(data: query_data)
-        # binding.pry
         bool_context = context(:bool, bool_options) do
           reduce_handlers(data: query_data, context: :bool)
         end
-        # binding.pry
+
         query_context.merge(bool_context)
       end
     end
@@ -74,7 +73,7 @@ module EsBuilderToy
     # BOOL QUERIES
     # * tested
     def filter_by(attribute, with:, combine: [], format: nil)
-      handler = { 
+      handler = {
         query: :filter,
         attribute: attribute, 
         with: with,
@@ -89,12 +88,12 @@ module EsBuilderToy
     # TERM LEVEL QUERIES
     # * tested
     def fuzzy(attribute, context: :query, options: {})
-      handler = { 
+      clause = options[:clause]
+      handler = {
         query: :fuzzy,
-        clause: options[:clause],
+        clause: clause,
         attribute: attribute,
         query_type: :term_level,
-        has_one: true
       }
       set_handler(context: context, handler: handler)
     end

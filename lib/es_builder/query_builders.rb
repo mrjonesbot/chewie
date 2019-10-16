@@ -2,13 +2,21 @@ module QueryBuilders
   def build_term_level_query(handler, filters={})
     # TODO add clause handling
     attribute = handler[:attribute]
+    query = handler[:query]
+    clause = handler[:clause]
     value = filters[attribute] || filters[:query]
 
     return {} if value.nil?
     return [] if [value].flatten.empty?
 
-    context(attribute) do
-      { value: value }
+    if clause.present?
+      context(query) do
+        { attribute => { value: value } }
+      end
+    else
+      context(attribute) do
+        { value: value }
+      end
     end
   end
 

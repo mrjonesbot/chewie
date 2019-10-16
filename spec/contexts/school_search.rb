@@ -14,7 +14,7 @@ RSpec.shared_context 'school search interface' do
       end
 
       fuzzy :name
-      # fuzzy :name, context: :bool, options: { clause: :must }
+      fuzzy :name, context: :bool, options: { clause: :must }
 
       filter_by :active_school_years, with: :term, 
                                       format: active_school_years_format

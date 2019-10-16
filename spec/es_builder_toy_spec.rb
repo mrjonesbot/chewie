@@ -63,8 +63,7 @@ RSpec.describe EsBuilderToy do
         let(:handler) { handlers[:bool].first }
         let(:bool_context) { result[:query][:bool] }
         let(:filter_context) { bool_context[:filter] }
-        let(:term) { filter_context.first }
-        let(:term_clause) { term[:term] }
+        let(:term) { filter_context[:term] }
         let(:expected_value) do
           {
             active_school_years: "school_year_id_8_active_true" 
@@ -76,16 +75,15 @@ RSpec.describe EsBuilderToy do
         end
 
         it 'sets a valid query under the :term clause' do
-          # binding.pry
-          expect(term_clause).to eq expected_value
+          expect(term).to eq expected_value
         end
 
         it 'sets a hash for the :term clause' do
-          expect(term_clause.is_a?(Hash)).to be true
+          expect(term.is_a?(Hash)).to be true
         end
 
         it 'enforces formatting' do
-          expect(term_clause[:active_school_years]).
+          expect(term[:active_school_years]).
             to eq "school_year_id_8_active_true"
         end
       end
@@ -95,17 +93,14 @@ RSpec.describe EsBuilderToy do
       let(:handler) { handlers[:bool].second }
       let(:output) { result[:query][:bool] }
       let(:filter_context) { output[:filter] }
-      let(:terms) { filter_context.second }
-      let(:terms_clause) { terms[:terms] }
-      let(:governances) { terms_clause[:governances] }
+      let(:terms) { filter_context[:terms] }
+      let(:governances) { terms[:governances] }
       let(:expected_value) do
         {
-          terms: {
-            governances: [
-              "governance_Charter_school_year_id_8",
-              "governance_Alop_school_year_id_8"
-            ]
-          }
+          governances: [
+            "governance_Charter_school_year_id_8",
+            "governance_Alop_school_year_id_8"
+          ]
         }
       end
 
@@ -137,16 +132,14 @@ RSpec.describe EsBuilderToy do
       end
       let(:output) { result[:query][:bool] }
       let(:filter) { output[:filter] }
-      let(:range) { filter.third }
-      let(:range_clause) { range[:range][:ages] }
+      let(:range) { filter[:range] }
+      let(:range_clause) { range[:ages] }
       let(:expected_value) do
         {
-          range: {
-            ages: {
-              "gte" => 20,
-              "lte" => 10,
-              "format" => "mm/dd/yyyy"
-            }
+          ages: {
+            "gte" => 20,
+            "lte" => 10,
+            "format" => "mm/dd/yyyy"
           }
         }
       end
@@ -217,16 +210,27 @@ RSpec.describe EsBuilderToy do
 
   describe '#fuzzy' do
     context 'building compound must queries' do
-      # let(:handler) { handlers[:bool][:must].first }
+      let(:handler) { handlers[:bool].first }
+      let(:output) { result[:query] }
+      let(:must_clause) { output[:bool][:must] }
+      let(:expected_result) do
+        {:fuzzy=>{:name=>{:value=>"Art"}}}
+      end
 
-      # it 'defines a handler' do
-      #   expect(handler.present?).to be true
-      # end
+
+      it 'defines a handler' do
+        # binding.pry
+        expect(handler.present?).to be true
+      end
 
       # it 'includes option values' do
       #   expect(fuzzy_attribute.include?(:boost)).to be true
       #   expect(fuzzy_attribute[:boost]).to eq 3
       # end
+
+      it 'sets a valid fuzzy query under the :must clause' do
+        expect(must_clause).to eq expected_result 
+      end
 
       # it 'set the query value' do
       #   expect(value).to eq query
@@ -234,29 +238,28 @@ RSpec.describe EsBuilderToy do
     end
 
     context 'building leaf queries' do
-      # let(:handler) do 
-      #   handlers[:query].first
-      # end
-      # let(:output) { result[:query] }
-      # let(:fuzzy) { output[:fuzzy] }
-      # # let(:range) { filter.third }
-      # # let(:range_clause) { range[:range][:ages] }
-      # let(:expected_value) do
-      #   {
-      #     name: {
-      #       value: "Art"
-      #     }
-      #   }
-      # end
+      let(:handler) do 
+        handlers[:query].first
+      end
+      let(:output) { result[:query] }
+      let(:fuzzy) { output[:fuzzy] }
+      # let(:range) { filter.third }
+      # let(:range_clause) { range[:range][:ages] }
+      let(:expected_value) do
+        {
+          name: {
+            value: "Art"
+          }
+        }
+      end
 
-      # it 'defines a handler' do
-      #   binding.pry
-      #   expect(handler.present?).to be true
-      # end
+      it 'defines a handler' do
+        expect(handler.present?).to be true
+      end
 
-      # it 'sets a valid query under the :fuzzy clause' do
-      #   expect(fuzzy).to eq expected_value
-      # end
+      it 'sets a valid query under the :fuzzy clause' do
+        expect(fuzzy).to eq expected_value
+      end
 
       # it 'includes option values' do
       #   expect(fuzzy_attribute.include?(:boost)).to be true
