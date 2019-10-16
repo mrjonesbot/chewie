@@ -20,7 +20,7 @@ module Handlers
 
     return unless context_handlers.present?
 
-    # grouped_handlers = context_handlers.group_by {|h| h[:query] }
+    grouped_handlers = context_handlers.group_by {|h| h[:query] }
 
     context_handlers.each.with_object({}) do |handler, hsh|
       next if handler.empty?
@@ -34,13 +34,14 @@ module Handlers
 
 
       clause_or_query = (clause || query)
+      has_one = grouped_handlers[query].one?
       
-      if hsh[clause_or_query].is_a? Array
-        hsh[clause_or_query] = 
-          (hsh[clause_or_query] || []).push(reduced_handler)
+      if has_one
+        hsh[clause_or_query] =
+          (hsh[clause_or_query] || {}).merge(reduced_handler)
       else
         hsh[clause_or_query] = 
-          (hsh[clause_or_query] || {}).merge(reduced_handler)
+          (hsh[clause_or_query] || []).push(reduced_handler)
       end
     end
   end

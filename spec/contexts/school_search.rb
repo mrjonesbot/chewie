@@ -18,6 +18,7 @@ RSpec.shared_context 'school search interface' do
 
       filter_by :active_school_years, with: :term, 
                                       format: active_school_years_format
+
       filter_by :governances, with: :terms,
                               combine: [:active_school_years],
                               format: governances_format

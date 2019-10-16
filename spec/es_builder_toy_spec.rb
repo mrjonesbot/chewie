@@ -254,6 +254,7 @@ RSpec.describe EsBuilderToy do
       end
 
       it 'defines a handler' do
+        binding.pry
         expect(handler.present?).to be true
       end
 
