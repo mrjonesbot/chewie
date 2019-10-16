@@ -20,13 +20,12 @@ module Handlers
 
     return unless context_handlers.present?
 
-    grouped_handlers = context_handlers.group_by {|h| h[:query] }
+    # grouped_handlers = context_handlers.group_by {|h| h[:query] }
 
-    grouped_handlers.each.with_object({}) do |(query, handler), hsh|
+    context_handlers.each.with_object({}) do |handler, hsh|
       next if handler.empty?
 
       # should_pop = handler[:has_one]
-      binding.pry
       query = handler[:query]
       clause = handler[:clause]
 
