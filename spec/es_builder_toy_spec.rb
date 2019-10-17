@@ -224,9 +224,9 @@ RSpec.describe EsBuilderToy do
         {
           fuzzy: {
             name: {
-              value: "Art"
+              value: "Art",
+               boost: 3
             },
-            boost: 3
           }
         }
       end
@@ -256,14 +256,15 @@ RSpec.describe EsBuilderToy do
       end
       let(:output) { result[:query] }
       let(:fuzzy) { output[:fuzzy] }
+      let(:fuzzy_value) { fuzzy[:name] }
       # let(:range) { filter.third }
       # let(:range_clause) { range[:range][:ages] }
       let(:expected_value) do
         {
           name: {
-            value: "Art"
+            value: "Art",
+            boost: 3
           },
-          boost: 3
         }
       end
 
@@ -277,8 +278,8 @@ RSpec.describe EsBuilderToy do
 
       it 'includes option values' do
         # binding.pry
-        expect(fuzzy.include?(:boost)).to be true
-        expect(fuzzy[:boost]).to eq 3
+        expect(fuzzy_value.include?(:boost)).to be true
+        expect(fuzzy_value[:boost]).to eq 3
       end
 
       # it 'set the query value' do

@@ -11,16 +11,16 @@ module QueryBuilders
     return {} if value.nil?
     return [] if [value].flatten.empty?
 
+    # if clause.present?
+    #   binding.pry
+    # end
     if clause.present?
-      binding.pry
-    end
-    if clause.present?
-      context(query, options) do
-        { attribute => { value: value } }
+      context(query) do
+        { attribute => { value: value }.merge(options) }
       end
     else
-      context(attribute, options) do
-        { value: value }
+      context(attribute) do
+        { value: value }.merge(options)
       end
     end
   end
