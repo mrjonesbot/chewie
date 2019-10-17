@@ -1,4 +1,6 @@
 module Utils
+  private
+
   def context(key, **options)
     options.merge(key => yield)
   end
@@ -15,7 +17,7 @@ module Utils
     end.with_indifferent_access
   end
 
-  def fetch_combine_values(keys, filters)
+  def combine_values(keys, filters)
     keys.map { |key| filters[key] }
   end
 

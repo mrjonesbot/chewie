@@ -1,20 +1,25 @@
 module QueryBuilders
+  private
+
   def build_term_level_query(handler, filters={})
-    # TODO add clause handling
     attribute = handler[:attribute]
     query = handler[:query]
     clause = handler[:clause]
     value = filters[attribute] || filters[:query]
+    options = handler.fetch(:options, {})
 
     return {} if value.nil?
     return [] if [value].flatten.empty?
 
     if clause.present?
-      context(query) do
+      binding.pry
+    end
+    if clause.present?
+      context(query, options) do
         { attribute => { value: value } }
       end
     else
-      context(attribute) do
+      context(attribute, options) do
         { value: value }
       end
     end
@@ -32,7 +37,7 @@ module QueryBuilders
     combine = handler[:combine]
 
     should_format = format.present?
-    combined = fetch_combine_values(combine, filters)
+    combined = combine_values(combine, filters)
     new_value =
       format_or_return_value(_value, combined, format, should_format)
     exposed_value = expose_or_return_value(new_value, with, should_format)

@@ -131,7 +131,7 @@ RSpec.describe EsBuilderToy do
       end
     end
 
-    context '#range' do
+    context 'range' do
       let(:handler) do 
         handlers[:bool].last
       end
@@ -221,7 +221,14 @@ RSpec.describe EsBuilderToy do
       let(:output) { result[:query] }
       let(:must_clause) { output[:bool][:must] }
       let(:expected_result) do
-        {:fuzzy=>{:name=>{:value=>"Art"}}}
+        {
+          fuzzy: {
+            name: {
+              value: "Art"
+            },
+            boost: 3
+          }
+        }
       end
 
 
@@ -255,7 +262,8 @@ RSpec.describe EsBuilderToy do
         {
           name: {
             value: "Art"
-          }
+          },
+          boost: 3
         }
       end
 
@@ -267,10 +275,11 @@ RSpec.describe EsBuilderToy do
         expect(fuzzy).to eq expected_value
       end
 
-      # it 'includes option values' do
-      #   expect(fuzzy_attribute.include?(:boost)).to be true
-      #   expect(fuzzy_attribute[:boost]).to eq 3
-      # end
+      it 'includes option values' do
+        # binding.pry
+        expect(fuzzy.include?(:boost)).to be true
+        expect(fuzzy[:boost]).to eq 3
+      end
 
       # it 'set the query value' do
       #   expect(value).to eq query

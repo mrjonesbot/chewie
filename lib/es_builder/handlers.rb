@@ -6,6 +6,8 @@ module Handlers
     }
   end
 
+  private
+
   def set_handler(context: :query, handler: {})
     if handlers[context].present?
       handlers[context].push(handler)
@@ -25,14 +27,9 @@ module Handlers
     context_handlers.each.with_object({}) do |handler, hsh|
       next if handler.empty?
 
-      # should_pop = handler[:has_one]
       query = handler[:query]
       clause = handler[:clause]
-
       reduced_handler = reduce_handler(handler, filters)
-      # reduced_result = should_pop ? reduced_handler.pop : reduced_handler
-
-
       clause_or_query = (clause || query)
       has_one = grouped_handlers[query].one?
       

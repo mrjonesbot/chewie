@@ -64,12 +64,6 @@ module EsBuilderToy
       end
     end
 
-    def match_all_query(options)
-      context(:query, options) do
-        { match_all: {} }
-      end
-    end
-
     # BOOL QUERIES
     # * tested
     def filter_by(attribute, with:, combine: [], format: nil)
@@ -87,13 +81,13 @@ module EsBuilderToy
     
     # TERM LEVEL QUERIES
     # * tested
-    def fuzzy(attribute, context: :query, options: {})
-      clause = options[:clause]
+    def fuzzy(attribute, context: :query, clause: nil, options: {})
       handler = {
         query: :fuzzy,
         clause: clause,
         attribute: attribute,
         query_type: :term_level,
+        options: options,
       }
       set_handler(context: context, handler: handler)
     end
@@ -105,6 +99,14 @@ module EsBuilderToy
       # }
 
       # set_handler(name: by, options: handle_options)
+    end
+
+    private
+
+    def match_all_query(options)
+      context(:query, options) do
+        { match_all: {} }
+      end
     end
   end
 end
