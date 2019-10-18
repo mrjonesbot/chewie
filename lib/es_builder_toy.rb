@@ -93,12 +93,16 @@ module EsBuilderToy
     end
 
     # * untested
-    def range(by, options: {})
-      # handle_options = {
-      #   with: :range, combine: [], format: nil, options: options
-      # }
+    def range(attribute, context: :query, clause: nil, options: {})
+      handler = {
+        query: :range,
+        clause: clause,
+        attribute: attribute,
+        query_type: :term_level,
+        options: options
+      }
 
-      # set_handler(name: by, options: handle_options)
+      set_handler(context: context, handler: handler)
     end
 
     private
