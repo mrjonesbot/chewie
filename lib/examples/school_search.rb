@@ -1,7 +1,7 @@
-require_relative '../es_builder_toy'
+require_relative '../es_builder'
 
 class SchoolSearch
-  extend EsBuilderToy::Interface
+  extend EsBuilder::Interface
 
   governances_format = lambda do |value, adds|
     "governance_#{value}_school_year_id_#{adds.first}"

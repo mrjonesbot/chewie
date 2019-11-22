@@ -1,14 +1,36 @@
 module Utils
-  private
+  def set_handler(context: :query, handler: {})
+    if handlers[context].present?
+      handlers[context].push(handler)
+    else
+      handlers[context] = [handler]
+    end
+  end
+
+  def reduce_handlers(data: {}, context: :query)
+    filters = data[:filters]
+    context_handlers = handlers[context]
+
+    return unless context_handlers.present?
+
+    grouped_handlers = context_handlers.group_by {|h| h[:query] }
+
+    context_handlers.each.with_object({}) do |handler, hsh|
+      next if handler.empty?
+
+      handler = EsBuilder::Handler::Reduced.
+        new(context: context, handler: handler, filters: filters)
+
+      handler.reduce_with(grouped_handlers, hsh)
+    end
+  end
 
   def context(key, **options)
     options.merge(key => yield)
   end
 
   def set_query_data(query, filters)
-    {
-      filters: clean_filters(filters).merge(query: query)
-    }
+    { filters: clean_filters(filters).merge(query: query) }
   end
 
   def clean_filters(filters)
@@ -19,10 +41,6 @@ module Utils
 
   def combine_values(keys, filters)
     keys.map { |key| filters[key] }
-  end
-
-  def format_or_return_value(value, combined, format, should_format)
-    should_format ? format_values(value, combined, format) : value
   end
 
   def format_values(values, combine, format)

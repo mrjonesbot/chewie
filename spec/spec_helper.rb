@@ -1,6 +1,5 @@
 require "bundler/setup"
 require "es_builder"
-require "es_builder_toy"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
