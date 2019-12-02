@@ -18,7 +18,7 @@ module Utils
     context_handlers.each.with_object({}) do |handler, hsh|
       next if handler.empty?
 
-      handler = EsBuilder::Handler::Reduced.
+      handler = Chewie::Handler::Reduced.
         new(context: context, handler: handler, filters: filters)
 
       handler.reduce_with(grouped_handlers, hsh)

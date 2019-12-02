@@ -1,16 +1,16 @@
-require './lib/es_builder/version'
-require 'es_builder/utils'
-require 'es_builder/interface/bool'
-require 'es_builder/interface/term_level'
-require 'es_builder/interface/full_text'
-require 'es_builder/handler/reduced'
+require './lib/chewie/version'
+require 'chewie/utils'
+require 'chewie/interface/bool'
+require 'chewie/interface/term_level'
+require 'chewie/interface/full_text'
+require 'chewie/handler/reduced'
 require 'active_support/all'
 require 'pry'
 
-module EsBuilder
-  include EsBuilder::Interface::Bool
-  include EsBuilder::Interface::TermLevel
-  include EsBuilder::Interface::FullText
+module Chewie
+  include Chewie::Interface::Bool
+  include Chewie::Interface::TermLevel
+  include Chewie::Interface::FullText
 
   def handlers
     @handlers ||= {
