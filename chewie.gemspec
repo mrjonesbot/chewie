@@ -1,18 +1,18 @@
 lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "es_builder/version"
+require "chewie/version"
 
 Gem::Specification.new do |spec|
-  spec.name          = "es_builder"
-  spec.version       = EsBuilder::VERSION
+  spec.name          = "chewie"
+  spec.version       = Chewie::VERSION
   spec.authors       = ["mrjonesbot"]
   spec.email         = ["nate@mrjones.io"]
 
-  spec.summary       = "Build custom Elasticsearch queries with a declarative interface."
-  spec.homepage      = "https://github.com/mrjonesbot/es_builder"
+  spec.summary       = "A declarative interface for building Elasticsearch queries"
+  spec.homepage      = "https://github.com/mrjonesbot/chewie"
   spec.license       = "MIT"
 
-  # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
+  spec.metadata["yard.run"] = "yri"
 
   # spec.metadata["homepage_uri"] = spec.homepage
   # spec.metadata["source_code_uri"] = "TODO: Put your gem's public repo URL here."
@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "pry"
+  spec.add_development_dependency "yard"
 
   spec.add_runtime_dependency(%q<activesupport>, [">= 5.1.6"])
   spec.add_runtime_dependency(%q<pry>)

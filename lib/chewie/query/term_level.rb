@@ -1,6 +1,6 @@
-require 'es_builder/utils'
+require 'chewie/utils'
 
-module EsBuilder
+module Chewie
   module Query
     class TermLevel
       attr_reader :attribute, :query, :clause, :value, :options, :strategy

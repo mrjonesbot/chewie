@@ -1,8 +1,8 @@
-require 'es_builder/query/term_level'
-require 'es_builder/query/bool'
-require 'es_builder/query/full_text'
+require 'chewie/query/term_level'
+require 'chewie/query/bool'
+require 'chewie/query/full_text'
 
-module EsBuilder
+module Chewie
   module Handler
     class Reduced
       attr_reader :context, :query, :clause, :built_query, :clause_or_query
@@ -46,11 +46,11 @@ module EsBuilder
 
         case query_type
         when :term_level
-          ::EsBuilder::Query::TermLevel.new(handler, filters).build
+          ::Chewie::Query::TermLevel.new(handler, filters).build
         when :bool
-          ::EsBuilder::Query::Bool.new(handler, filters).build
+          ::Chewie::Query::Bool.new(handler, filters).build
         when :full_text
-          ::EsBuilder::Query::FullText.new(handler, filters).build
+          ::Chewie::Query::FullText.new(handler, filters).build
         else
           raise "Could not build a query for type: #{query_type}"
         end

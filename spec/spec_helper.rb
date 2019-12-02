@@ -1,5 +1,5 @@
 require "bundler/setup"
-require "es_builder"
+require "chewie"
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

@@ -1,6 +1,6 @@
-require 'es_builder/utils'
+require 'chewie/utils'
 
-module EsBuilder
+module Chewie
   module Query
     class Bool
       attr_reader :attribute, :query_format, :with, :value, :combine, :filters

@@ -4,7 +4,7 @@ require 'pp'
 require 'spec_helper'
 require 'pry'
 
-RSpec.describe EsBuilder do
+RSpec.describe Chewie do
   include_context 'school search interface'
 
   let!(:query) { "Art" }
@@ -22,7 +22,7 @@ RSpec.describe EsBuilder do
   end
 
   let!(:service) do
-    SchoolSearch
+    SchoolChewie
   end
 
   let!(:handlers) do

@@ -1,9 +1,9 @@
-require_relative '../../lib/es_builder'
+require_relative '../../lib/chewie'
 
 RSpec.shared_context 'school search interface' do
   before(:context) do
-    class SchoolSearch
-      extend EsBuilder
+    class SchoolChewie
+      extend Chewie
 
       governances_format = lambda do |value, adds|
         "governance_#{value}_school_year_id_#{adds.first}"

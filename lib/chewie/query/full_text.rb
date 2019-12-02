@@ -1,6 +1,6 @@
-require 'es_builder/utils'
+require 'chewie/utils'
 
-module EsBuilder
+module Chewie
   module Query
     class FullText
       attr_reader :attribute, :with, :query, :clause, :value, :options, :strategy
