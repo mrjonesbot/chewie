@@ -13,8 +13,8 @@ NOTE: Chewie currently supports Elasticsearch 7.x.
 * [Installation](#installation)
 * [Usage](#usage)
 * [Filtering by Associations](#filtering-by-associations)
-   * [Format](#format)
-   * [Combine](#combine)
+	 * [Format](#format)
+	 * [Combine](#combine)
 * [Supported Queries (Documentation)](#supported-queries)
 * [Development](#development)
 * [Contributing](#contributing)
@@ -31,11 +31,11 @@ gem 'chewie'
 
 And then execute:
 
-    $ bundle
+		$ bundle
 
 Or install it yourself as:
 
-    $ gem install chewie
+		$ gem install chewie
 
 ## Usage
 
@@ -75,7 +75,7 @@ query = SchoolChewie.build(query: query, filters: filters)
 
 puts query
 # =>
-# {
+#	{
 # 	query: {
 # 		term: { 
 # 			name: { value: 'Park School' }
