@@ -13,8 +13,8 @@ NOTE: Chewie currently supports Elasticsearch 7.x.
 * [Installation](#installation)
 * [Usage](#usage)
 * [Filtering by Associations](#filtering-by-associations)
-	 * [Format](#format)
-	 * [Combine](#combine)
+   * [Format](#format)
+   * [Combine](#combine)
 * [Supported Queries (Documentation)](#supported-queries)
 * [Development](#development)
 * [Contributing](#contributing)
@@ -31,11 +31,11 @@ gem 'chewie'
 
 And then execute:
 
-		$ bundle
+    $ bundle
 
 Or install it yourself as:
 
-		$ gem install chewie
+    $ gem install chewie
 
 ## Usage
 
@@ -45,13 +45,13 @@ Define a `Chewie` class:
 # app/chewies/school_chewie.rb
 
 class SchoolChewie
-	extend Chewie
-	
-	term :name
-	range :age
-	match :description
-	
-	filter_by :governances, with: :terms 
+  extend Chewie
+
+  term :name
+  range :age
+  match :description
+
+  filter_by :governances, with: :terms 
 end
 ```
 
@@ -61,11 +61,11 @@ Pass filter parameters to the `#build` method:
 # app/**/*.rb
 
 params = {
-	query: "Park School"
-	filters: {
-		age: { 'gte': 20, 'lte': 10 },
-		governances: ['Charter', 'Alop']
-	}
+  query: "Park School"
+  filters: {
+    age: { 'gte': 20, 'lte': 10 },
+    governances: ['Charter', 'Alop']
+  }
 }
 
 query = params[:query]
@@ -97,7 +97,7 @@ puts query
 # }
 ```
 
-Chewie expects incoming parameter attributes to match the attributes defined in your Chewie class, in order to pull the correct value and build the query
+Chewie expects incoming parameter attributes to match the attributes defined in your Chewie class, in order to pull the correct value and build the query.
 
 ```ruby
 # definition
@@ -127,102 +127,106 @@ term :name
 
 ## Filtering by Associations
 
-Depending on how you build your index, some fields might store values from multiple attributes.
+Depending on how you build your index, some fields might store values from multiple tables.
 
 A simple case is if you'd like to filter records through an association.
 
 ```ruby
 class School
-	has_many :school_disciplines
-	has_many :disciplines, through: :school_disciplines
+  has_many :school_disciplines
+  has_many :disciplines, through: :school_disciplines
 end
 
 class Discipline
-	has_many :school_disciplines
-	has_many :schools, through: :school_disciplines
+  has_many :school_disciplines
+  has_many :schools, through: :school_disciplines
 end
 
 class SchoolDiscipline
-	belongs_to :school
-	belongs_to :discipline
+  belongs_to :school
+  belongs_to :discipline
 end
 ```
 
-We might imagine a search engine that helps users find schools in their area and allow them to filter schools by various criteria. Some schools might offer discipline specific programs, therefore a school will have many disciplines. Disciplines is a standard collection that schools can associate with in our application.
+We can imagine a search engine that helps users find schools in their area and allow them to filter schools by various criteria. 
 
-In our search UI, we might provide a `disciplines` filter and allow users to filter by disciplines via dropdown.
+Some schools might offer discipline specific programs, therefore a school will have many disciplines. 
+
+Disciplines is a non-user populated collection that schools can associate with in the application.
+
+In the search UI, we might provide a `disciplines` filter and allow users to filter by disciplines via dropdown.
 
 We provide the search UI with `ids` of disciplines we'd like to filter by.
 
 ```json
 {
-	filters: {
-		disciplines: [1, 2, 3, 4]
-	}
+  filters: {
+    disciplines: [1, 2, 3, 4]
+  }
 }
 ```
 
-Our idex consists of school records, therefore we won't have access to every discipline each school is associated to by default.
+The idex consists of school records, therefore we won't have access to every discipline each school is associated to by default.
 
-Instead, we need to define custom index attributes for our school records to capture those relationships.
+Instead, we need to define custom index attributes for school records to capture those relationships.
 
 We can do that by defining model methods on `School` that collects associated id values and returns a collection of strings to be indexed.
 
 ```ruby
 class School
-	def disciplines_index
-		discipline_ids = disciplines.pluck(:id)
-		discipline_ids.map do |discipline_id|
-			"discipline_#{discipline_id}"
-		end
-	end
+  def disciplines_index
+    discipline_ids = disciplines.pluck(:id)
+    discipline_ids.map do |discipline_id|
+      "discipline_#{discipline_id}"
+    end
+  end
 
-	# Method Elasticsearch can use to populate the index
-	def search_data
-		{
-			name: name,
-			disciplines: disciplines_index
-		}
-	end
+  # Method Elasticsearch can use to populate the index
+  def search_data
+    {
+      name: name,
+      disciplines: disciplines_index
+    }
+  end
 end
 ```
 
 When Elasticsearch indexes `School` records, each record will now have knowledge of which disciplines it is associated to.
 
 ```json
-	{ 
-		name: 'Park School',
-		disciplines: [
-			"discipline_1",
-			"discipline_2",
-			"discipline_3"
-		]
-	}
+  { 
+    name: 'Park School',
+    disciplines: [
+      "discipline_1",
+      "discipline_2",
+      "discipline_3"
+    ]
+  }
 ```
 
 ### Format
-At this point, our index is ready to return associated `School` records when given a collection of `Discipline` ids. 
+At this point, the index is ready to return associated `School` records when given a collection of `Discipline` ids. 
 
 The caveat is the stored values of `:disciplines` is in a format that contains both the `School` and `Discipline` id.
 
-We'll need to do a little extra work at search time to ensure our `id` filter values are transformed into the appropriate string format.
+We'll need to do a little extra work at search time to ensure the `id` filter values are transformed into the appropriate string format.
 
 To address this, `bool` query methods have a `:format` option that takes a lambda and exposes attribute values given.
 
 ```ruby
 class SchoolChewie
-	disciplines_format = lambda do |id|
-		"discipline_#{id}"
-	end
+  disciplines_format = lambda do |id|
+    "discipline_#{id}"
+  end
 
-	filter_by :disciplines, with: :terms, format: disciplines_format
+  filter_by :disciplines, with: :terms, format: disciplines_format
 end
 
 params = {
-	query: '',
-	filters: {
-		disciplines: [1, 4]
-	}
+  query: '',
+  filters: {
+    disciplines: [1, 4]
+  }
 }
 
 result = SchoolChewie.build(query: params[:query], filters: params[:filters])
@@ -245,7 +249,7 @@ puts result
 # }
 ```
 
-Now that our query output for `disciplines` matches values stored in the index, Elasticsearch will find `School` records where `disciplines` match to either `"discipline_1"` or `"discipline_4"`; allowing us to find schools by their associated disciplines.
+Now that the query for `disciplines` matches values stored in the index, Elasticsearch will find `School` records where `disciplines` match to either `"discipline_1"` or `"discipline_4"`; allowing us to find schools by their associated disciplines.
 
 ### Combine
 
@@ -255,65 +259,65 @@ Continuing with the previous example, let's say we want to filter schools by dis
 
 `"active"` might be a boolean attribute found on `SchoolDiscipline`.
 
-We can re-write our `discipline_index` method to pull the discipline `id` and `active` attributes from `SchoolDiscipline` join records.
+We can re-write `#discipline_index` to pull the discipline `id` and `active` attributes from `SchoolDiscipline` join records.
 
 ```ruby
 class School
-	def disciplines_index
-		school_disciplines.map do |school_discipline|
-			discipline_id = school_discipline.id
-			active = school_discipline.active
+  def disciplines_index
+    school_disciplines.map do |school_discipline|
+      discipline_id = school_discipline.id
+      active = school_discipline.active
 
-			"discipline_#{discipline_id}_active_#{active}"
-		end
-	end
+      "discipline_#{discipline_id}_active_#{active}"
+    end
+  end
 
-	# Method Elasticsearch can use to populate the index
-	def search_data
-		{
-			name: name,
-			disciplines: disciplines_index
-		}
-	end
+  # Method Elasticsearch can use to populate the index
+  def search_data
+    {
+      name: name,
+      disciplines: disciplines_index
+    }
+  end
 end
 ```
 
-Which changes our index to:
+Which changes the index to:
 
 ```json
-	{ 
-		name: 'Park School',
-		disciplines: [
-			"discipline_1_active_true",
-			"discipline_2_active_false",
-			"discipline_3_active_false"
-		]
-	}
+  { 
+    name: 'Park School',
+    disciplines: [
+      "discipline_1_active_true",
+      "discipline_2_active_false",
+      "discipline_3_active_false"
+    ]
+  }
 ```
 
-We can now imagine there is a `active` toggle in the search UI, which expands our filter parameters.
+We can now imagine there is a `active` toggle in the search UI, which expands the filter parameters.
 
 ```ruby
 params = {
-	query: '',
-	filters: {
-		disciplines: [1, 4],
-		active: true
-	}
+  query: '',
+  filters: {
+    disciplines: [1, 4],
+    active: true
+  }
 }
 ```
 
-Now, at search time we not only need to format with the `disciplines` collection, but combine those values with the `active` attribute.
+At search time we not only need to format with the `disciplines` collection, but combine those values with the `active` attribute.
 
-Let's update our Chewie to take this new criteria into account.
+Let's update `SchoolChewie` to take this new criteria into account.
 
 ```ruby
 class SchoolChewie
-	disciplines_format = lambda do |id, combine|
-		"discipline_#{id}_active_#{combine.first}"
-	end
+  disciplines_format = lambda do |id, combine|
+    "discipline_#{id}_active_#{combine.first}"
+  end
 
-	filter_by :disciplines, with: :terms, combine: [:active], format: disciplines_format
+  filter_by :disciplines, with: :terms, combine: [:active], format: disciplines_format
 end
 ```
 
@@ -325,13 +329,13 @@ The order of the values matches the order defined in the method call.
 combine: [:active, :governances, :age]
 
 lambda do |id, combine|
-	combine[0] #=> :active value
-	combine[1] #=> :governances value
-	combine[2] #=> :age value
+  combine[0] #=> :active value
+  combine[1] #=> :governances value
+  combine[2] #=> :age value
 end
 ```
 
-The output becomes:
+The new output:
 
 ```ruby
 result = SchoolChewie.build(query: params[:query], filters: params[:filters])
@@ -358,22 +362,22 @@ puts result
 ### [Compound Queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html)
 #### [Bool](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html)
 
-* filter (#filter_by)
-* should (#should_include)
-* must (#must_include)
-* must_not (#must_not_include)
+* [filter (#filter_by)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/Bool)
+* [should (#should_include)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/Bool)
+* [must (#must_include)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/Bool)
+* [must_not (#must_not_include)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/Bool)
 
 ### [Term Level Queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/term-level-queries.html)
 
-* term (#term)
-* terms (#terms)
-* range (#range)
-* fuzzy (#fuzzy)
+* [term (#term)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/TermLevel)
+* [terms (#terms)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/TermLevel)
+* [range (#range)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/TermLevel)
+* [fuzzy (#fuzzy)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/TermLevel)
 
 ### [Full Text Queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html)
 
-* match (#match)
-* multi-match (#multimatch)
+* [match (#match)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/FullText)
+* [multi-match (#multimatch)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/FullText)
 
 ## Development
 
