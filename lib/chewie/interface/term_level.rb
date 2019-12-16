@@ -1,7 +1,8 @@
 module Chewie
   module Interface
     module TermLevel
-
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-fuzzy-query.html
+      # 
       # @param attribute [Symbol] Field you wish to search
       # @param context [Symbol] Desired context the query should appear (see https://www.elastic.co/guide/en/elasticsearch/reference/current/compound-queries.html)
       # @param clause [Symbol] Specify a nested clause, usually context dependent (optional)
@@ -18,6 +19,8 @@ module Chewie
         set_handler(context: context, handler: handler)
       end
 
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-range-query.html
+      # 
       # @param attribute [Symbol] Field you wish to search
       # @param context [Symbol] Desired context the query should appear (see https://www.elastic.co/guide/en/elasticsearch/reference/current/compound-queries.html)
       # @param clause [Symbol] Specify a nested clause, usually context dependent (optional)
@@ -35,6 +38,8 @@ module Chewie
         set_handler(context: context, handler: handler)
       end
 
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
+      # 
       # @param attribute [Symbol] Field you wish to search
       # @param context [Symbol] Desired context the query should appear (see https://www.elastic.co/guide/en/elasticsearch/reference/current/compound-queries.html)
       # @param clause [Symbol] Specify a nested clause, usually context dependent (optional)
@@ -52,6 +57,8 @@ module Chewie
         set_handler(context: context, handler: handler)
       end
 
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html
+      # 
       # @param attribute [Symbol] Field you wish to search
       # @param context [Symbol] Desired context the query should appear (see https://www.elastic.co/guide/en/elasticsearch/reference/current/compound-queries.html)
       # @param clause [Symbol] Specify a nested clause, usually context dependent (optional)

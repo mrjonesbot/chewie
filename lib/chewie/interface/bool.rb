@@ -1,7 +1,8 @@
 module Chewie
   module Interface
     module Bool
-
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html
+      # 
       # @param attribute [Symbol] Field you wish to search
       # @param with [Symbol] Specify the term-level query [term, terms, range]
       # @param combine [Array] Target additional filter values to be combined in the formatted output (optional)

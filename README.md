@@ -362,22 +362,22 @@ puts result
 ### [Compound Queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html)
 #### [Bool](https://www.elastic.co/guide/en/elasticsearch/reference/current/query-dsl-bool-query.html)
 
-* [filter (#filter_by)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/Bool)
-* [should (#should_include)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/Bool)
-* [must (#must_include)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/Bool)
-* [must_not (#must_not_include)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/Bool)
+* [filter (#filter_by)](lib/chewie/interface/bool.rb)
+* [should (#should_include)](lib/chewie/interface/bool.rb)
+* [must (#must_include)](lib/chewie/interface/bool.rb)
+* [must_not (#must_not_include)](lib/chewie/interface/bool.rb)
 
 ### [Term Level Queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/term-level-queries.html)
 
-* [term (#term)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/TermLevel)
-* [terms (#terms)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/TermLevel)
-* [range (#range)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/TermLevel)
-* [fuzzy (#fuzzy)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/TermLevel)
+* [term (#term)](lib/chewie/interface/term_level.rb)
+* [terms (#terms)](lib/chewie/interface/term_level.rb)
+* [range (#range)](lib/chewie/interface/term_level.rb)
+* [fuzzy (#fuzzy)](lib/chewie/interface/term_level.rb)
 
 ### [Full Text Queries](https://www.elastic.co/guide/en/elasticsearch/reference/current/full-text-queries.html)
 
-* [match (#match)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/FullText)
-* [multi-match (#multimatch)](https://www.rubydoc.info/gems/chewie/0.2.2/Chewie/Interface/FullText)
+* [match (#match)](lib/chewie/interface/full_text.rb)
+* [multi-match (#multimatch)](lib/chewie/interface/full_text.rb)
 
 ## Development
 
