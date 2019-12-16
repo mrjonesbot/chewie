@@ -160,8 +160,8 @@ We provide the search UI with `ids` of disciplines we'd like to filter by.
 
 ```json
 {
-  filters: {
-    disciplines: [1, 2, 3, 4]
+  "filters": {
+    "disciplines": [1, 2, 3, 4]
   }
 }
 ```
@@ -195,8 +195,8 @@ When Elasticsearch indexes `School` records, each record will now have knowledge
 
 ```json
   { 
-    name: 'Park School',
-    disciplines: [
+    "name": "Park School",
+    "disciplines": [
       "discipline_1",
       "discipline_2",
       "discipline_3"
@@ -286,8 +286,8 @@ Which changes the index to:
 
 ```json
   { 
-    name: 'Park School',
-    disciplines: [
+    "name": "Park School",
+    "disciplines": [
       "discipline_1_active_true",
       "discipline_2_active_false",
       "discipline_3_active_false"
