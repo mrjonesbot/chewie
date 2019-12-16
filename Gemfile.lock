@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    chewie (0.2.2)
+    chewie (0.2.5)
       activesupport (>= 5.1.6)
       pry
 
